@@ -29,19 +29,20 @@ describe QRubyDriver do
     response.value.should.== 4
   end
 
-  it "should allow us to get a variable" do
+  it "should allow us to get a variable to set its value" do
     q_instance = QInstance.new 5001
-    response = q_instance.get("a:`cheesy")
+    q_instance.get("a:`cheesy")
+    response = q_instance.get("a")
     q_instance.close
-
     puts response
+    response.value.should.== "cheesy"
   end
 
-#  it "should allow us to get a String" do
-#    q_instance = QInstance.new 5001
-#    q_instance.get("select * from `.")
-#    q_instance.close
-#  end
+  it "should allow us to get a dictionary" do
+    q_instance = QInstance.new 5001
+    response = q_instance.get("select * from `.")
+    q_instance.close
+  end
 
 
 end

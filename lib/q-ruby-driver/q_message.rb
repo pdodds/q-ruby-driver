@@ -47,7 +47,7 @@ class QMessage
         @message_type = :async
     end
 
-    decode_value(message[8..@length])
+    @value = decode_value(message[8..@length])
 
     self
   end
@@ -89,6 +89,7 @@ class QMessage
     return encoded_value
   end
 
+  # Encodes an array
   def encode_array(value)
     # Assuming a char vector
     encoded_value = ""
@@ -101,26 +102,56 @@ class QMessage
   # Decodes an encoded value into a type
   def decode_value(value)
     type = value.unpack("c1")[0]
-    payload = value[1..value.length+1]
+    decode_value = ""
+    if (type>0 and type<99)
+      # We have a vector
+      payload = value[1..value.length+1]
+      decode_value = decode_vector(type,payload,payload.length)
+    elsif (type == 99)
+      # We have a dictionary
+      payload = value[1..value.length+1]
+      decode_value = decode_dictionary(type,payload,payload.length)
+    elsif (type == 101)
+      # We have a confirmation message?
+    elsif (type<0 and type>-128)
+      payload = value[1..value.length+1]
+      decode_value = decode_type(type,payload,payload.length)
+    else
+      throw "Unsupported type #{type}"
+    end
 
+    return decode_value
+  end
+
+  def decode_type(type,payload,length)
     case type
       when -128 then
         @exception = true
-        @value = payload.unpack("A*")[0]
+        return payload.unpack("A#{length}")[0]
       when -6 then
-        @value = payload.unpack("I*")[0]
+        return payload.unpack("I#{length}")[0]
       when -11 then
-        @value = payload.unpack("A*")[0]
+        return payload.unpack("A#{length}")[0]
       when -101 then
-        @value = payload.unpack("A*")[0]
-      when 101 then
-        @value = payload.unpack("A*")[0]
+        return payload.unpack("A#{length}")[0]
       else
         throw "Unsupported type #{type} on message #{@message.unpack("H*")}"
     end
+  end
 
-    decode_value = ""
-    return decode_value
+  # Decodes a dictionary - which we will hold as a map in Ruby
+  def decode_dictionary(type,payload,length)
+
+    puts @message.unpack("H*")
+    # In order to decode a dictionary we will basically create two arrays
+    first_vector_result = decode_vector(payload,length)
+    second_vector_result = decode_vector(payload,length)
+  end
+
+  def decode_vector(payload,length)
+    vector_header = payload.unpack("c1I")
+    puts "Vector type #{vector_header[0]} size #{vector_header[1]} #{payload.unpack("H*")}"
+
   end
 
 end
