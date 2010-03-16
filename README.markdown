@@ -1,30 +1,36 @@
 q-ruby-driver
-    by Philip Dodds
-    http://www.github.com/pdodds/q-ruby-driver
+=
+  by Philip Dodds
+  http://www.github.com/pdodds/q-ruby-driver
 
-== DESCRIPTION:
-
+DESCRIPTION:
+-
 A ruby interface to a Q server from http://www.kx.com,  see http://code.kx.com for more
 information.
 
-== FEATURES/PROBLEMS:
+FEATURES/PROBLEMS:
+-
 
 * Provides a pure Ruby implementation of the IPC protocol
 * Very limited
 
-== SYNOPSIS:
+SYNOPSIS:
+-
 
 Currently we have a very limited implementation that is just a proof of concept
 
-== REQUIREMENTS:
+REQUIREMENTS:
+-
 
 Ruby 1.8+
 
-== INSTALL:
+INSTALL:
+-
 
 sudo gem install q-ruby-driver
 
-== LICENSE:
+LICENSE:
+-
 
 (The MIT License)
 
