@@ -50,13 +50,28 @@ describe QRubyDriver do
     puts response.value.inspect
   end
 
-  it "should allow us to get a dictionary from a select" do
+  it "should allow us to create a table, populate it and select from it" do
     q_instance = QInstance.new 5001
-    response = q_instance.get("select * from `.")
-    q_instance.close
-    response.value.should.is_a? Hash
+    q_instance.get("""trade:(	[]date:`date$();
+	   	time:`time$();
+		sym:`symbol$();
+		price:`float$();
+		size:`int$();
+		exchange:`symbol$();
+		c:()
+		);
+    """)
+    q_instance.get("portfolio:`IBM`GOOG`VOD`BA`AIB`MSFT`BOI / define variable portfolio")
+    q_instance.get("countries:(portfolio!`USA`USA`UK`USA`IRL`USA`IRL) / some countries")
+    q_instance.get("dts: .z.D-til 200 / A few dates")
+    q_instance.get("st: 09:30:00.000 / market open")
+    q_instance.get("et: 16:00:00.000 / market close")
+    q_instance.get("exchanges:`N`L`O`C / Some exchanges")
+    q_instance.get("n:1000000 / The number of trades to create")
+    response = q_instance.get("\\t trade_data:(n?dts;st+n?et-st;n?portfolio;n?100f;n?1000;n?exchanges;n?.Q.A,'reverse .Q.a) / create 1m random trades")
 
-    puts response.value.inspect
+    puts "Created a million rows in #{response.value}ms"
+    q_instance.close
   end
 
 
