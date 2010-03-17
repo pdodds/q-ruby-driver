@@ -50,7 +50,7 @@ describe QRubyDriver do
     puts response.value.inspect
   end
 
-  it "should allow us to create a table, populate it and select from it" do
+  it "should allow us to create a 1000 row trade list, populate it and select from it" do
     q_instance = QInstance.new 5001
     q_instance.get("""trade:(	[]date:`date$();
 	   	time:`time$();
@@ -68,7 +68,7 @@ describe QRubyDriver do
     q_instance.get("et: 16:00:00.000 / market close")
     q_instance.get("exchanges:`N`L`O`C / Some exchanges")
     q_instance.get("n:1000000 / The number of trades to create")
-    response = q_instance.get("\\t trade_data:(n?dts;st+n?et-st;n?portfolio;n?100f;n?1000;n?exchanges;n?.Q.A,'reverse .Q.a) / create 1m random trades")
+    response = q_instance.get("\\t insert[`trade;(n?dts;st+n?et-st;n?portfolio;n?100f;n?1000;n?exchanges;n?.Q.A,'reverse .Q.a)] / create 1m random trades")
 
     puts "Created a million rows in #{response.value}ms"
     q_instance.close
