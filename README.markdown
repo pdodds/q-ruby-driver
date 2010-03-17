@@ -19,6 +19,18 @@ SYNOPSIS:
 
 Currently we have a very limited implementation that is just a proof of concept
 
+A very simple example of its use:
+
+        q_instance = QInstance.new 5001
+
+        # Note we'll use the sync call (get)
+        q_instance.get("a:`IBM`GOOG`APPL")
+        response = q_instance.get("a")
+
+        # Get the body of the response
+        puts response.value.inspect
+        
+
 REQUIREMENTS:
 -
 
