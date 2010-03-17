@@ -139,6 +139,8 @@ class QMessage
         return  unpack("Z*")[0]
       when -101 then
         return unpack("A")[0]
+      when -98 then
+        return unpack("F")[0]
       when -0 then
         # TODO what is the 0 data type
         return unpack("c2")[0]
@@ -168,6 +170,7 @@ class QMessage
   def decode_vector(type)
     vector_header = unpack("c1I")
     vector = []
+
     (1..vector_header[1]).each do
       vector << decode_type(-type)
     end

@@ -50,7 +50,21 @@ describe QRubyDriver do
     puts response.value.inspect
   end
 
-  it "should allow us to create a 1000 row trade list, populate it and select from it" do
+  it "should allow us to get vectors" do
+    q_instance = QInstance.new 5001
+    q_instance.get("a:`IBM`GOOG`APPL")
+    response = q_instance.get("a")
+    q_instance.close
+    response.value.should.is_a? Array
+    response.value.length.should.== 3
+    response.value[0].should.== "IBM"
+    response.value[1].should.== "GOOG"
+    response.value[2].should.== "APPL"
+
+    puts response.value.inspect
+  end
+
+  it "should allow us to create a 1,000,000 trades" do
     q_instance = QInstance.new 5001
     q_instance.get("""trade:(	[]date:`date$();
 	   	time:`time$();
@@ -70,7 +84,10 @@ describe QRubyDriver do
     q_instance.get("n:1000000 / The number of trades to create")
     response = q_instance.get("\\t insert[`trade;(n?dts;st+n?et-st;n?portfolio;n?100f;n?1000;n?exchanges;n?.Q.A,'reverse .Q.a)] / create 1m random trades")
 
-    puts "Created a million rows in #{response.value}ms"
+    puts "Created a million trades in #{response.value}ms"
+
+#    response = q_instance.get("select max price by sym from trade")
+#    puts response.inspect
     q_instance.close
   end
 
