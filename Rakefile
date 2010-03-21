@@ -6,7 +6,7 @@ rescue LoadError
 end
 
 ensure_in_path 'lib'
-require 'q-ruby-driver-ruby-driver'
+require 'q-ruby-driver'
 
 task :default => 'test:run'
 task 'gem:release' => 'test:run'

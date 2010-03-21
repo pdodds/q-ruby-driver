@@ -1,9 +1,13 @@
-class QException < RuntimeError
+module QRubyDriver
 
-  attr :q_message
+  class QException < RuntimeError
 
-  def initialize(q_message)
-    @q_message = q_message
+    attr :q_message
+
+    def initialize(q_message)
+      @q_message = q_message
+    end
+
   end
 
 end
