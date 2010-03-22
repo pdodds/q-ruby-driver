@@ -44,7 +44,7 @@ module QRubyDriver
       qresponse = QMessage.new().decode(response)
       if (qresponse.exception)
         puts qresponse
-        throw QException.new qresponse
+        raise QRubyDriver::QException.new qresponse
       else
         qresponse
       end

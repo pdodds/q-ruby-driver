@@ -134,7 +134,7 @@ module QRubyDriver
       case type
         when -128 then
           @exception = true
-          return unpack("A")[0]
+          return unpack("Z*")[0]
         when -6 then
           return unpack("I")[0]
         when -11 then

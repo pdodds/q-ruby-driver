@@ -86,10 +86,27 @@ describe QRubyDriver do
 
     puts "Created a million trades in #{response.value}ms"
 
+    response = q_instance.get("count trade")
+
+    response.value.should.=== 1000000
+
+    puts response
+
 #    response = q_instance.get("select max price by sym from trade")
 #    puts response.inspect
     q_instance.close
   end
+
+  it "should return exceptions" do
+    q_instance = QInstance.new 5001
+    begin
+      q_instance.get("somethingmissing")
+    rescue QRubyDriver::QException => e
+      puts e.q_message.value
+    end
+    q_instance.close
+  end
+
 
 
 end
