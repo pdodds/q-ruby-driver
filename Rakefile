@@ -12,10 +12,10 @@ task :default => 'test:run'
 task 'gem:release' => 'test:run'
 
 Bones {
-  name  'q-ruby-driver-ruby-driver'
+  name  'q-ruby-driver'
   authors  'Philip Dodds'
   email  'philip.dodds at me dot com'
-  url  'http://www.github.com/pdodds/q-ruby-driver-ruby-driver'
+  url  'http://www.github.com/pdodds/q-ruby-driver'
   version  QRubyDriver::VERSION
 }
 
