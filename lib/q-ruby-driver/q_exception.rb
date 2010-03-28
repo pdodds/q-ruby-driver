@@ -8,6 +8,10 @@ module QRubyDriver
       @q_message = q_message
     end
 
+    def message
+      "QException [#{q_message.value}]"
+    end
+
   end
 
 end
