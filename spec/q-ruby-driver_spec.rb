@@ -110,6 +110,15 @@ describe QRubyDriver do
     
     q_instance.close
   end
+
+  it "should support getting functions" do
+    q_instance = QInstance.new 5001
+    response = q_instance.get("show_me:{[something] show something;show_me};")
+    puts response
+    q_instance.get("show_me(`hello)")
+
+    q_instance.close
+  end
   
 
   it "should return exceptions" do

@@ -128,6 +128,10 @@ module QRubyDriver
         decode_value = decode_type(type)
       elsif (type == 0)
         decode_value = decode_list
+      elsif (type == 100)
+        decode_value = "function"
+      elsif (type == 104)
+        decode_value = "function"
       else
         throw "Unsupported type #{type}"
       end
