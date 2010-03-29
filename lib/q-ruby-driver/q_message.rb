@@ -111,8 +111,6 @@ module QRubyDriver
 
     # Decodes an encoded value into a type
     def decode_value(type = nil)
-
-      return nil if @remaining_message.nil?
       
       type = unpack("c1")[0] if type.nil?
       decode_value = nil

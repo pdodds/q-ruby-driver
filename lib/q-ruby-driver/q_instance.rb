@@ -13,7 +13,7 @@ module QRubyDriver
     # Sync Send
     def get(obj)
       @client_socket.write QMessage.new().create(obj, true).message
-      build_response(@client_socket.recv(1024))
+      build_response(@client_socket.recv(10000000))
     end
 
     # ASync send
@@ -27,7 +27,7 @@ module QRubyDriver
       @client_socket.write encoded_message
 
       if (encoded_message[1] == 1)
-        build_response(@client_socket.recv(1024))
+        build_response(@client_socket.recv(10000000))
       else
         nil
       end
