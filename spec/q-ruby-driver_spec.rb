@@ -89,13 +89,17 @@ describe QRubyDriver do
     response = q_instance.get("count trade")
 
     response.value.should.=== 1000000
-
-    puts response
-
-#    response = q_instance.get("select max price by sym from trade")
-#    puts response.inspect
+    
     q_instance.close
   end
+
+  it "should allow us to select from the trades table" do
+    q_instance = QInstance.new 5001
+    response = q_instance.get("select max price by sym from trade")
+    puts response.inspect
+    q_instance.close
+  end
+  
 
   it "should return exceptions" do
     q_instance = QInstance.new 5001
