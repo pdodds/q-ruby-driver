@@ -113,9 +113,12 @@ module QRubyDriver
     def decode_value(type = nil)
       type = unpack("c1")[0] if type.nil?
       decode_value = nil
-      if (type>0 and type<99)
+      if (type>0 and type<98)
         # We have a vector
         decode_value = decode_vector(type)
+      elsif (type == 98)
+        # We have a dictionary
+        decode_value = decode_flip
       elsif (type == 99)
         # We have a dictionary
         decode_value = decode_dictionary
@@ -137,8 +140,12 @@ module QRubyDriver
         when -128 then
           @exception = true
           return unpack("Z*")[0]
+        when -1 then
+          return unpack("c1")[0]
         when -6 then
           return unpack("I")[0]
+        when -9 then
+          return unpack("D1")[0]
         when -11 then
           return  unpack("Z*")[0]
         when -101 then
@@ -153,11 +160,9 @@ module QRubyDriver
     # Decodes a dictionary - which we will hold as a hash in Ruby
     def decode_dictionary
       # In order to decode a dictionary we will basically create two arrays
-      vector_type = unpack("c1")[0]
-      first_vector_result = decode_value(vector_type)
+      first_vector_result = decode_value
       first_vector_result = [first_vector_result] unless first_vector_result.is_a? Array
-      second_vector_type = unpack("c1")[0]
-      second_vector_result = decode_value(second_vector_type)
+      second_vector_result = decode_value
       second_vector_result = [second_vector_result] unless second_vector_result.is_a? Array
 
       dictionary = {}
@@ -167,13 +172,22 @@ module QRubyDriver
       dictionary
     end
 
+    # Decodes a dictionary - which we will hold as a hash in Ruby
+    def decode_flip
+      unpack("c1")
+      flip_value = decode_value
+
+      flip_value
+    end
+
     # Decodes a vector into an array
     def decode_vector(type)
       vector_header = unpack("c1I")
       vector = []
 
       (1..vector_header[1]).each do
-        vector << decode_value(-type)
+        value = decode_value(-type)
+        vector << value
       end
 
       vector

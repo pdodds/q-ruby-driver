@@ -87,16 +87,27 @@ describe QRubyDriver do
     puts "Created a million trades in #{response.value}ms"
 
     response = q_instance.get("count trade")
-
-    response.value.should.=== 1000000
-    
+    response.value.should.== 1000000
     q_instance.close
   end
 
   it "should allow us to select from the trades table" do
     q_instance = QInstance.new 5001
     response = q_instance.get("select max price by sym from trade")
-    puts response.inspect
+    response.value.keys[0].length.should.== 1
+
+    puts response.value.inspect
+    
+    response.value[response.value.keys[0]]["price"].length.should.== 7
+    response.value.keys[0]["sym"].length.should.== 7
+    response.value.keys[0]["sym"].include?("GOOG").should.== true
+    response.value.keys[0]["sym"].include?("BA").should.== true
+    response.value.keys[0]["sym"].include?("BOI").should.== true
+    response.value.keys[0]["sym"].include?("IBM").should.== true
+    response.value.keys[0]["sym"].include?("MSFT").should.== true
+    response.value.keys[0]["sym"].include?("VOD").should.== true
+    response.value.keys[0]["sym"].include?("CHEESE").should.== false
+    
     q_instance.close
   end
   
@@ -138,6 +149,14 @@ describe QRubyDriver do
     response.value[0][4].should.== 4
 
   end
+
+#  it "should be able to support arrays as parameters" do
+#    q_instance = QInstance.new 5001
+#    values = ["a",1,2,3,4,5]
+#    response = q_instance.get(values)
+#    q_instance.close
+#
+#  end
 
 
 
