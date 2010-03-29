@@ -57,7 +57,7 @@ module QRubyDriver
           @message_type = :async
       end
 
-      @value = decode_value(message[8..@length])
+      @value = decode_value
 
       self
     end
@@ -110,8 +110,8 @@ module QRubyDriver
     end
 
     # Decodes an encoded value into a type
-    def decode_value(value)
-      type = unpack("c1")[0]
+    def decode_value(type = nil)
+      type = unpack("c1")[0] if type.nil?
       decode_value = nil
       if (type>0 and type<99)
         # We have a vector
@@ -123,6 +123,8 @@ module QRubyDriver
         # We have a confirmation message?
       elsif (type<0)
         decode_value = decode_type(type)
+      elsif (type == 0)
+        decode_value = decode_list
       else
         throw "Unsupported type #{type}"
       end
@@ -143,9 +145,6 @@ module QRubyDriver
           return unpack("A")[0]
         when -98 then
           return unpack("F")[0]
-        when -0 then
-          # TODO what is the 0 data type
-          return unpack("c2")[0]
         else
           throw "Unsupported type #{type} on message #{@message.unpack("H*")}"
       end
@@ -155,10 +154,10 @@ module QRubyDriver
     def decode_dictionary
       # In order to decode a dictionary we will basically create two arrays
       vector_type = unpack("c1")[0]
-      first_vector_result = decode_vector(vector_type)
+      first_vector_result = decode_value(vector_type)
       first_vector_result = [first_vector_result] unless first_vector_result.is_a? Array
       second_vector_type = unpack("c1")[0]
-      second_vector_result = decode_vector(second_vector_type)
+      second_vector_result = decode_value(second_vector_type)
       second_vector_result = [second_vector_result] unless second_vector_result.is_a? Array
 
       dictionary = {}
@@ -174,10 +173,22 @@ module QRubyDriver
       vector = []
 
       (1..vector_header[1]).each do
-        vector << decode_type(-type)
+        vector << decode_value(-type)
       end
 
       vector
+    end
+
+    # Handles the decoding of a list
+    def decode_list
+      list = []
+      list_header = unpack("c1I")
+
+      (1..list_header[1]).each do
+        list << decode_value
+      end
+
+      list
     end
 
   end

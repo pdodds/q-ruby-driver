@@ -107,6 +107,34 @@ describe QRubyDriver do
     q_instance.close
   end
 
+  it "should be able to handle multi-type dictionaries" do
+    q_instance = QInstance.new 5001
+    response = q_instance.get("(`b,1)!(`a,3)")
+    q_instance.close
+    response.value.should.is_a? Hash
+    response.value.length.should.== 2
+
+    response.value["b"].should.== "a"
+    response.value[1].should.== 3
+
+  end
+
+  it "should be able to handle lists" do
+    q_instance = QInstance.new 5001
+    response = q_instance.get("enlist til 5")
+    q_instance.close
+    response.value.should.is_a? Array
+    response.value.length.should.== 1
+    response.value[0].should.is_a? Array
+
+    response.value[0][0].should.== 0
+    response.value[0][1].should.== 1
+    response.value[0][2].should.== 2
+    response.value[0][3].should.== 3
+    response.value[0][4].should.== 4
+
+  end
+
 
 
 end
