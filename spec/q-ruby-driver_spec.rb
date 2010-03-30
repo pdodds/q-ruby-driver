@@ -159,6 +159,20 @@ describe QRubyDriver do
 
   end
 
+  it "should support character arrays" do
+    q_instance = QInstance.new 5001
+    response = q_instance.get("\"hello\"")
+    q_instance.close
+
+    response.value.should.is_a? Array
+    response.value.length.should.== 5
+    response.value[0].should.== "h"
+    response.value[1].should.== "e"
+    response.value[2].should.== "l"
+    response.value[3].should.== "l"
+    response.value[4].should.== "o"
+  end
+
 #  it "should be able to support arrays as parameters" do
 #    q_instance = QInstance.new 5001
 #    values = ["a",1,2,3,4,5]

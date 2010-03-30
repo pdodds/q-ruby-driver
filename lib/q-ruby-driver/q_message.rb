@@ -157,6 +157,8 @@ module QRubyDriver
           return unpack("A")[0]
         when -98 then
           return unpack("F")[0]
+        when -10 then
+          return unpack("Z1")[0]
         else
           throw "Unsupported type #{type} on message #{@message.unpack("H*")}"
       end
