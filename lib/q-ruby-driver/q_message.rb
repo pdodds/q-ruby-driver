@@ -197,6 +197,9 @@ module QRubyDriver
         vector << value
       end
 
+      # Lets make an array of characters back into a string
+      vector = vector.join("") if (type == 10)
+
       vector
     end
 
