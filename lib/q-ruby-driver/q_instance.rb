@@ -3,17 +3,27 @@ require 'socket'
 module QRubyDriver
   class QInstance
 
+    @@BUFFER_SIZE = 1024
+
     # Initializes the connection
     def initialize(port, host = "localhost", username = ENV['USER'])
       @client_socket = TCPSocket.new(host, port)
       @client_socket.write [username, "001"].pack("a*H")
-      @client_socket.recv(1024).unpack("H*")
+      buffered_recv().unpack("H*")
     end
 
     # Sync Send
     def get(obj)
       @client_socket.write QMessage.new().create(obj, true).message
-      build_response(@client_socket.recv(10000000))
+      build_response(buffered_recv())
+    end
+
+    def buffered_recv()
+      buffer = @client_socket.recv(@@BUFFER_SIZE)
+      while (buffer.length % @@BUFFER_SIZE == 0)
+        buffer << @client_socket.recv(@@BUFFER_SIZE)
+      end
+      return buffer
     end
 
     # ASync send
@@ -27,7 +37,7 @@ module QRubyDriver
       @client_socket.write encoded_message
 
       if (encoded_message[1] == 1)
-        build_response(@client_socket.recv(10000000))
+        build_response(buffered_recv())
       else
         nil
       end
