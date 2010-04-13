@@ -7,8 +7,13 @@ module QRubyDriver
     attr :value
     attr :message_type
     attr :message
+    attr :timing
+
+    @exception = false
 
     def create(value, sync = false)
+
+      start_time = Time.now
 
       # If we get given a string we are going to create an array of characters
       if (value.instance_of?(String))
@@ -17,8 +22,6 @@ module QRubyDriver
         @value = value
       end
 
-
-      @exception = false
       @message = ["01"].pack("H*")
       sync == true ? @message_type = :sync : @message_type = :async
       @message_type == :sync ? @message << ["01"].pack("H*") : @message << ["00"].pack("H*")
@@ -29,18 +32,23 @@ module QRubyDriver
       @message << [@length].pack("I")
       @message << encoded_value
 
+      @timing = Time.now - start_time
+
       self
     end
 
     def unpack(pattern)
+
       result = @remaining_message.unpack(pattern)
-      length_to_remove = result.pack(pattern).length
-      @remaining_message = @remaining_message[length_to_remove..@remaining_message.length]
+      @remaining_message = @remaining_message[result.pack(pattern).length..@remaining_message.length]
       result
     end
 
     # Decodes a binary message into a QMessage
     def decode(message)
+      @total_pack_time =0
+      @total_unpack_time =0 
+      start_time= Time.now
 
       @message = message
       @remaining_message = @message
@@ -59,6 +67,7 @@ module QRubyDriver
 
       @value = decode_value
 
+      @timing = Time.now - start_time
       self
     end
 
@@ -172,11 +181,9 @@ module QRubyDriver
       second_vector_result = decode_value
       second_vector_result = [second_vector_result] unless second_vector_result.is_a? Array
 
-      dictionary = {}
-      (0..first_vector_result.length-1).each do |i|
-        dictionary[first_vector_result[i]] = second_vector_result[i]
-      end
-      dictionary
+      hsh = {}
+      first_vector_result.zip(second_vector_result) { |k,v| hsh[k]=v }
+      hsh
     end
 
     # Decodes a dictionary - which we will hold as a hash in Ruby
@@ -191,14 +198,11 @@ module QRubyDriver
     def decode_vector(type)
       vector_header = unpack("c1I")
       vector = []
-
-      (1..vector_header[1]).each do
-        value = decode_value(-type)
-        vector << value
+      if type == 10
+        vector = unpack("Z#{vector_header[1]}")[0]
+      else
+         (1..vector_header[1]).each { vector << decode_value(-type)}
       end
-
-      # Lets make an array of characters back into a string
-      vector = vector.join("") if (type == 10)
 
       vector
     end
@@ -207,11 +211,7 @@ module QRubyDriver
     def decode_list
       list = []
       list_header = unpack("c1I")
-
-      (1..list_header[1]).each do
-        list << decode_value
-      end
-
+      (1..list_header[1]).each { list << decode_value }
       list
     end
 
