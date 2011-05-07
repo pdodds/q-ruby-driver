@@ -1,3 +1,4 @@
 .bnsignore
 .idea
 pkg
+/Gemfile.lock
