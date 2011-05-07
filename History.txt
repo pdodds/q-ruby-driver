@@ -1,4 +1,20 @@
-== 1.0.0 / 2010-03-04
+== 1.1.0 / 2011-05-07 / John Shields
+
+* 1.1.0.
+  * Added support to read/write all main Q-types (19 atom types, 19 vector types, lists, dicts, flips, exceptions)
+  * Read/write is done in a single-pass
+  * Improved overall performance by streamlining array operations; especially for read/write vector types
+  * Refactored connection logic and added detection of message length (to improve handling of long result sets)
+  * Added broader support for conversion to/from native Ruby types, including Bignum=>long, Float=>float, Symbol=>symbol, Hash=>flip, and TrueClass/FalseClass=>boolean. Date/Time types not yet natively supported.
+  * Added detection logic for Ruby Array to determine whether to convert to a Q vector or list
+  * Added unit-tests which work in absence of a Q service to which to connect
+  * Added distinction between QException (server side) and QIOException (client side)
+  * Moved encode/decode methods from QMessage to new QIO class (with naming convention read/write)
+  * Renamed QInstance => QConnection to be consistent with naming found in other Ruby SQL drivers
+  * Deprecated QMessage class
+  * Added TestUnit test cases (test_io and test_connection) which do not require an available Q server which to connect)
+
+== 1.0.0 / 2010-03-04 / Philip Dodds
 
 * 1.0.0.
   * Initial release

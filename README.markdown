@@ -1,34 +1,32 @@
 q-ruby-driver
 =
-  by Philip Dodds
+  by Philip Dodds and John Shields
   http://www.github.com/pdodds/q-ruby-driver
 
 DESCRIPTION:
 -
+
 A ruby interface to a Q server from http://www.kx.com,  see http://code.kx.com for more
 information.
 
-FEATURES/PROBLEMS:
+FEATURES:
 -
 
 * Provides a pure Ruby implementation of the IPC protocol
-* Very limited
+* Supports single-pass read/write for all main Q-types (19 atom types, 19 vector types, lists, dicts, flips, exceptions)
+* Converts Q types to/from native Ruby types, including Array, Hash, Bignum, Float, Symbol, and TrueClass/FalseClass. Date/Time types are not yet natively supported.
 
-SYNOPSIS:
+EXAMPLE USAGE:
 -
 
-Currently we have a very limited implementation that is just a proof of concept
-
-A very simple example of its use:
-
-        q_instance = QInstance.new 5001
+        q_connection = QConnection.new 'localhost', 5001
 
         # Note we'll use the sync call (get)
-        q_instance.get("a:`IBM`GOOG`APPL")
+        q_connection.get("a:`IBM`GOOG`APPL")
         response = q_instance.get("a")
 
         # Get the body of the response
-        puts response.value.inspect
+        puts response.inspect
         
 
 REQUIREMENTS:
