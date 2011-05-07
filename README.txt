@@ -18,7 +18,7 @@ A ruby interface to a Q server from Kx Systems (http://www.kx.com). See: http://
 
         # Note we'll use the sync call (get)
         q_connection.get("a:`IBM`GOOG`APPL")
-        response = q_instance.get("a")
+        response = q_connection.get("a")
 
         # Get the body of the response
         puts response.inspect

@@ -23,7 +23,7 @@ EXAMPLE USAGE:
 
         # Note we'll use the sync call (get)
         q_connection.get("a:`IBM`GOOG`APPL")
-        response = q_instance.get("a")
+        response = q_connection.get("a")
 
         # Get the body of the response
         puts response.inspect
