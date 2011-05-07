@@ -24,8 +24,6 @@ Jeweler::Tasks.new do |gem|
   gem.email = "philip.dodds at me dot com"
   gem.authors = ["Philip Dodds", "John Shields"]
   gem.files = FileList['lib/**/*.rb']
-  gem.add_development_dependency gem "rspec", '>= 2.0.0'
-  gem.add_development_dependency gem "test-unit", '>= 2.0.0'
 end
 
 task :default => 'test:run'
